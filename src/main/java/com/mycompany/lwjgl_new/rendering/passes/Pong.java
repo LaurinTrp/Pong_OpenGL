@@ -51,10 +51,10 @@ public class Pong {
 
     public void updateKeys(boolean keyUp, boolean keyDown) {
         if (keyUp && offset.y + height < 1) {
-            offset.add(new Vec2(0, 2f / (Window.height / 2f)));
+            offset.add(new Vec2(0, 2.5f / (Window.height / 2f)));
         }
         if (keyDown && offset.y - height > -1) {
-            offset.add(new Vec2(0, -2f / (Window.height / 2f)));
+            offset.add(new Vec2(0, -2.5f / (Window.height / 2f)));
         }
     }
 

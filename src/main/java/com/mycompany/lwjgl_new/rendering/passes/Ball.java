@@ -39,12 +39,13 @@ public class Ball {
 
     private float width, height;
 
-    private float velX, velY;
+    private double velX, velY;
 
     private Vec2 offset = new Vec2();
-    
+
     private Vec4 color = new Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    
+
+    private double timer = 0;
 
     public Ball(float width, float height, float offsetX, float offsetY) {
         this.width = width / Window.width;
@@ -90,7 +91,7 @@ public class Ball {
         String path = "C:\\Users\\ltrapp\\Documents\\NetBeansProjects\\LWJGL_New\\src\\main\\java\\com\\mycompany\\resources\\ball\\";
         program = new ShaderProgram(path + "vertex.vs", path + "fragment.fs");
 
-//        calculateVelocity();
+        calculateVelocity();
 
         init = true;
     }
@@ -98,17 +99,13 @@ public class Ball {
     private void calculateVelocity() {
         Random random = new Random();
 
-        int randomX = 0;
-        while (randomX == 0) {
-            randomX = random.nextInt(4) - 2;
-        }
-        int randomY = 0;
-        while (randomY == 0) {
-            randomY = random.nextInt(4) - 2;
-        }
-
+        float randomX = (random.nextFloat() > 0.5) ? 1 + random.nextFloat() : -1 - random.nextFloat();
+        float randomY = (random.nextFloat() > 0.5) ? 1 + random.nextFloat() : -1 - random.nextFloat();
+        System.out.println(randomX + "\t" + randomY);
         velX = (float) randomX / Window.width * 2;
         velY = (float) randomY / Window.height * 2;
+
+        timer = 0;
     }
 
     private void updatePosition() {
@@ -123,21 +120,19 @@ public class Ball {
         if (offset.x + width > 1 || offset.x - width < -1) {
             offset.set(0, 0);
             calculateVelocity();
+            checkTopBottom = true;
         }
     }
-    
-    public void checkCollision(Pong pong){
-//        if(offset.y - height < pong.getOffset().y + pong.getHeight()/2 &&
-//                offset.y + height > pong.getOffset().y - pong.getHeight()/2 &&
-//                offset.x - width/2 < pong.getOffset().x + pong.getWidth()/2 &&
-//                offset.x + width/2 > pong.getOffset().x - pong.getWidth()/2 ){
-//            velX = -velX;
-//        }
-        System.out.println(pong.getOffset());
-        if(offset.y - height < pong.getOffset().y + pong.getHeight()/2){
-            color.set(new Vec4(1.0, 0.0, 0.0, 1.0));
-        }else{
-            color.set(new Vec4(1.0, 1.0, 1.0, 1.0));
+
+    boolean checkTopBottom = true;
+
+    public void checkCollision(Pong pong) {
+
+        if (offset.y - height <= pong.getOffset().y + pong.getHeight()
+                && offset.y + height >= pong.getOffset().y - pong.getHeight()
+                && offset.x - width <= pong.getOffset().x + pong.getWidth()
+                && offset.x + width >= pong.getOffset().x - pong.getWidth()) {
+            velX = -velX;
         }
     }
 
@@ -163,6 +158,12 @@ public class Ball {
                     GL20.glUniform2fv(program.getUniformLocation("offset"), offset.toFA_());
                     GL20.glUniform4fv(program.getUniformLocation("myColor"), color.toFA_());
                     glDrawArrays(GL_TRIANGLES, 0, 6);
+
+                    if (timer < Math.pow(5, -4)) {
+                        velX += (velX < 0) ? -timer : timer;
+                        velY += (velY < 0) ? -timer : timer;
+                        timer += 1d / 100000000d;
+                    }
                 }
                 glBindVertexArray(0);
             }

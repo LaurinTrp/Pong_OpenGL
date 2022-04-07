@@ -28,7 +28,7 @@ public class Renderer {
         player1.render();     
         player2.render();
         ball.checkCollision(player1);
-//        ball.checkCollision(player2);
+        ball.checkCollision(player2);
         ball.render();
     }
     
