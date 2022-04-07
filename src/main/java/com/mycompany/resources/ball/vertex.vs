@@ -9,7 +9,7 @@ uniform vec4 myColor;
 
 out vec4 color;
 
-void main(void){
+void main(){
     
     gl_Position = vec4(position.xy + offset.xy, position.zw);
     color = myColor;

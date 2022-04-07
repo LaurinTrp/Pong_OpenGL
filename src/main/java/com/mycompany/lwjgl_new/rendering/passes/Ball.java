@@ -42,10 +42,14 @@ public class Ball {
     private double velX, velY;
 
     private Vec2 offset = new Vec2();
+    private Vec2 collisionPosition = new Vec2();
 
     private Vec4 color = new Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     private double timer = 0;
+    
+    private boolean frameCollision = false;
+    private Vec2 frameCollisionPosition = new Vec2();
 
     public Ball(float width, float height, float offsetX, float offsetY) {
         this.width = width / Window.width;
@@ -101,39 +105,49 @@ public class Ball {
 
         float randomX = (random.nextFloat() > 0.5) ? 1 + random.nextFloat() : -1 - random.nextFloat();
         float randomY = (random.nextFloat() > 0.5) ? 1 + random.nextFloat() : -1 - random.nextFloat();
-        System.out.println(randomX + "\t" + randomY);
         velX = (float) randomX / Window.width * 2;
         velY = (float) randomY / Window.height * 2;
 
         timer = 0;
     }
 
-    private void updatePosition() {
+    public void updatePosition() {
         offset.set(offset.x + velX, offset.y + velY);
     }
 
-    private void checkWindowBoundries() {
+    public boolean checkWindowBoundries() {
         boolean reset = false;
         if (offset.y + height > 1 || offset.y - height < -1) {
+            frameCollision = true;
+            frameCollisionPosition = new Vec2(offset);
             velY = -velY;
+            return true;
         }
         if (offset.x + width > 1 || offset.x - width < -1) {
+            frameCollision = true;
+            frameCollisionPosition = new Vec2(offset);
             offset.set(0, 0);
             calculateVelocity();
-            checkTopBottom = true;
+            return true;
         }
+        return false;
     }
 
     boolean checkTopBottom = true;
 
-    public void checkCollision(Pong pong) {
-
+    public boolean checkCollision(Pong pong) {
+        frameCollision = false;
         if (offset.y - height <= pong.getOffset().y + pong.getHeight()
                 && offset.y + height >= pong.getOffset().y - pong.getHeight()
                 && offset.x - width <= pong.getOffset().x + pong.getWidth()
                 && offset.x + width >= pong.getOffset().x - pong.getWidth()) {
             velX = -velX;
+            Vec2 tempOffset = new Vec2(offset);
+            Vec2 tempOffsetPong = new Vec2(pong.getOffset());
+            collisionPosition = new Vec2((tempOffset.x + tempOffsetPong.x)/2f, (tempOffset.y + tempOffsetPong.y)/2f);
+            frameCollision = true;
         }
+        return frameCollision;
     }
 
     public void render() {
@@ -153,8 +167,6 @@ public class Ball {
             {
                 glBindVertexArray(vao);
                 {
-                    updatePosition();
-                    checkWindowBoundries();
                     GL20.glUniform2fv(program.getUniformLocation("offset"), offset.toFA_());
                     GL20.glUniform4fv(program.getUniformLocation("myColor"), color.toFA_());
                     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -162,13 +174,29 @@ public class Ball {
                     if (timer < Math.pow(5, -4)) {
                         velX += (velX < 0) ? -timer : timer;
                         velY += (velY < 0) ? -timer : timer;
-                        timer += 1d / 100000000d;
+                        timer += Math.pow(10, -8);
                     }
                 }
                 glBindVertexArray(0);
             }
             program.stop();
         }
+    }
+
+    public void setCollision(boolean collision) {
+        this.frameCollision = collision;
+    }
+
+    public boolean isFrameCollision() {
+        return frameCollision;
+    }
+
+    public Vec2 getFrameCollisionPosition() {
+        return frameCollisionPosition;
+    }
+    
+    public Vec2 getCollisionPosition() {
+        return collisionPosition;
     }
 
     public Vec2 getOffset() {
@@ -183,6 +211,7 @@ public class Ball {
         return height;
     }
 
+    
     public void dispose() {
 
         glDeleteVertexArrays(vao);
