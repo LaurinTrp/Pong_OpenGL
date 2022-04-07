@@ -22,6 +22,7 @@ import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
+import static org.lwjgl.opengl.GL40.glUniform1d;
 
 /**
  *
@@ -38,7 +39,7 @@ public class Background {
     private int collidedPlayer = -1;
     private boolean frameCollision = false;
     
-    private double timer;
+    private float timer;
 
     public Background(Ball ball) {
         this.ball = ball;
@@ -81,7 +82,7 @@ public class Background {
         //  compile and upload shader
         String path = "C:\\Users\\ltrapp\\Documents\\NetBeansProjects\\LWJGL_New\\src\\main\\java\\com\\mycompany\\resources\\background\\";
         program = new ShaderProgram(path + "vertex.vs", path + "fragment.fs");
-
+        timerReset();
         init = true;
     }
 
@@ -109,6 +110,18 @@ public class Background {
                         glUniform2fv(program.getUniformLocation("collisionPosition"), ball.getCollisionPosition().toFA_());
                     }
                     glUniform1i(program.getUniformLocation("player"), collidedPlayer);
+                    
+                    if(timer < Math.pow(10, -5)){
+                        timerReset();
+                    }
+                    
+                    if(frameCollision || collidedPlayer != -1 || timer != Math.pow(10, -1)){
+                        timerCountdown();
+                    }
+                    
+                    glUniform1d(program.getUniformLocation("timer"), timer);
+                    System.out.println(timer);
+                    
                     glDrawArrays(GL_TRIANGLES, 0, 6);
                 }
                 glBindVertexArray(0);
@@ -118,11 +131,11 @@ public class Background {
     }
     
     private void timerReset(){
-        timer = Math.pow(10, -1);
+        timer = 1;
     }
     
     private void timerCountdown(){
-        timer-= Math.pow(10, -7);
+        timer-= Math.pow(10, -3);
     }
 
     public void setCollidedPlayer(int collidedPlayer) {

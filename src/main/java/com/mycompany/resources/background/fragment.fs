@@ -9,6 +9,7 @@ uniform vec2 collisionPosition;
 
 uniform int player;
 uniform bool wallCollision;
+uniform float timer;
 
 vec4 color;
 
