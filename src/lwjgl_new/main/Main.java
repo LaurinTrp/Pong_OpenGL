@@ -9,7 +9,7 @@ import lwjgl_new.gui.Window;
 public class Main {
     public static void main(String[] args) {
     	
-    	System.setProperty("RESOURCE", "C:\\Users\\ltrapp\\git\\OpenGL-Pong\\src\\main\\java\\com\\mycompany\\resources\\");
+    	System.setProperty("RESOURCE", "D:\\Pong_OpenGL\\src\\resources\\");
     	
         Window window = new Window();
         window.createWindow();
