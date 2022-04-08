@@ -8,6 +8,8 @@ package com.mycompany.lwjgl_new.rendering;
 import com.mycompany.lwjgl_new.rendering.passes.Background;
 import com.mycompany.lwjgl_new.rendering.passes.Ball;
 import com.mycompany.lwjgl_new.rendering.passes.Pong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,18 +33,17 @@ public class Renderer {
         player1.render();
         player2.render();
 
-        ball.setCollision(false);
-        if (ball.checkCollision(player1)) {
-            background.setCollidedPlayer(0);
-        }
-        if (ball.checkCollision(player2)) {
-            background.setCollidedPlayer(1);
-        }
+        ball.setCollidedPlayer(-1);
+        
+        ball.checkWindowBoundries();
+        ball.checkCollision(player1, 0);
+        ball.checkCollision(player2, 1);
         ball.updatePosition();
-        background.setFrameCollision(ball.checkWindowBoundries());
         ball.render();
-        background.render();
-        background.setCollidedPlayer(-1);
+//        try {
+//            Thread.sleep(10);
+//        } catch (InterruptedException ex) {
+//        }
     }
 
     public void dispose() {

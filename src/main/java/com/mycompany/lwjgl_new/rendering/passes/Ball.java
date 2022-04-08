@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL15C.glBufferData;
 import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15C.glGenBuffers;
 import org.lwjgl.opengl.GL20;
+import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20C.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
@@ -34,8 +35,8 @@ public class Ball {
 
     private boolean init = false;
 
-    private int vao = 0, vbo = 0;
-    private ShaderProgram program;
+    private int vao = 0, vbo = 0, vaoBackground = 0, vboBackground = 0;
+    private ShaderProgram program, programBackground;
 
     private float width, height;
 
@@ -46,8 +47,8 @@ public class Ball {
 
     private Vec4 color = new Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-    private double timer = 0;
-    
+    private int collidedPlayer = -1;
+
     private boolean frameCollision = false;
     private Vec2 frameCollisionPosition = new Vec2();
 
@@ -66,6 +67,15 @@ public class Ball {
             -width, height, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
             width, -height, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
             width, height, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,};
+
+        float[] background = new float[]{
+            -1, 1, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            -1, -1, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            1, -1, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            //
+            -1, 1, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            1, -1, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            1, 1, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,};
 
         //  create VAO
         vao = glGenVertexArrays();
@@ -86,14 +96,30 @@ public class Ball {
         }
         glBindVertexArray(0);
 
+        vaoBackground = glGenVertexArrays();
+        vboBackground = glGenBuffers();
+        glBindVertexArray(vaoBackground);
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, vboBackground);
+            glBufferData(GL_ARRAY_BUFFER, background, GL_DYNAMIC_READ);
+
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 4, GL_FLOAT, false, 8 * 4, 0 * 4);
+
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 4, GL_FLOAT, false, 8 * 4, 4 * 4);
+        }
+        glBindVertexArray(0);
+
     }
 
     private void init() {
         initVertices();
 
         //  compile and upload shader
-        String path = "C:\\Users\\ltrapp\\Documents\\NetBeansProjects\\LWJGL_New\\src\\main\\java\\com\\mycompany\\resources\\ball\\";
-        program = new ShaderProgram(path + "vertex.vs", path + "fragment.fs");
+        String path = "C:\\Users\\ltrapp\\Documents\\NetBeansProjects\\LWJGL_New\\src\\main\\java\\com\\mycompany\\resources\\";
+        program = new ShaderProgram(path + "ball\\vertex.vs", path + "ball\\fragment.fs");
+        programBackground = new ShaderProgram(path + "background\\vertex.vs", path + "background\\fragment.fs");
 
         calculateVelocity();
 
@@ -108,7 +134,6 @@ public class Ball {
         velX = (float) randomX / Window.width * 2;
         velY = (float) randomY / Window.height * 2;
 
-        timer = 0;
     }
 
     public void updatePosition() {
@@ -117,12 +142,12 @@ public class Ball {
 
     public boolean checkWindowBoundries() {
         boolean reset = false;
-        if (offset.y + height > 1 || offset.y - height < -1) {
-            frameCollision = true;
-            frameCollisionPosition = new Vec2(offset);
-            velY = -velY;
-            return true;
-        }
+//        if (offset.y + height > 1 || offset.y - height < -1) {
+//            frameCollision = true;
+//            frameCollisionPosition = new Vec2(offset);
+//            velY = -velY;
+//            return true;
+//        }
         if (offset.x + width > 1 || offset.x - width < -1) {
             frameCollision = true;
             frameCollisionPosition = new Vec2(offset);
@@ -135,8 +160,7 @@ public class Ball {
 
     boolean checkTopBottom = true;
 
-    public boolean checkCollision(Pong pong) {
-        frameCollision = false;
+    public boolean checkCollision(Pong pong, int player) {
         if (offset.y - height <= pong.getOffset().y + pong.getHeight()
                 && offset.y + height >= pong.getOffset().y - pong.getHeight()
                 && offset.x - width <= pong.getOffset().x + pong.getWidth()
@@ -144,10 +168,12 @@ public class Ball {
             velX = -velX;
             Vec2 tempOffset = new Vec2(offset);
             Vec2 tempOffsetPong = new Vec2(pong.getOffset());
-            collisionPosition = new Vec2((tempOffset.x + tempOffsetPong.x)/2f, (tempOffset.y + tempOffsetPong.y)/2f);
-            frameCollision = true;
+            collisionPosition = new Vec2((tempOffset.x + tempOffsetPong.x) / 2f, (tempOffset.y + tempOffsetPong.y) / 2f);
+            collidedPlayer = player;
+
+            return true;
         }
-        return frameCollision;
+        return false;
     }
 
     public void render() {
@@ -163,6 +189,21 @@ public class Ball {
 
         //  render vertices (vbo) of VAO vao to framebuffer and use the shader "simple-triangle"
         {
+
+            programBackground.start();
+            {
+                glBindVertexArray(vao);
+                {
+                    glUniform1i(program.getUniformLocation("wallCollision"), checkWindowBoundries() ? 1 : 0);
+                    glUniform1i(program.getUniformLocation("player"), collidedPlayer);
+//                    GL20.glUniform1i(program.getUniformLocation("lastCollided"), lastCollided);
+//                    GL20.glUniform4fv(program.getUniformLocation("myColor"), new Vec4(1.0f).toFA_());
+                    glDrawArrays(GL_TRIANGLES, 0, 6);
+                }
+                glBindVertexArray(0);
+            }
+            programBackground.stop();
+
             program.start();
             {
                 glBindVertexArray(vao);
@@ -170,17 +211,16 @@ public class Ball {
                     GL20.glUniform2fv(program.getUniformLocation("offset"), offset.toFA_());
                     GL20.glUniform4fv(program.getUniformLocation("myColor"), color.toFA_());
                     glDrawArrays(GL_TRIANGLES, 0, 6);
-
-                    if (timer < Math.pow(5, -4)) {
-                        velX += (velX < 0) ? -timer : timer;
-                        velY += (velY < 0) ? -timer : timer;
-                        timer += Math.pow(10, -8);
-                    }
                 }
                 glBindVertexArray(0);
             }
             program.stop();
+
         }
+    }
+
+    public void setCollidedPlayer(int collidedPlayer) {
+        this.collidedPlayer = collidedPlayer;
     }
 
     public void setCollision(boolean collision) {
@@ -194,7 +234,7 @@ public class Ball {
     public Vec2 getFrameCollisionPosition() {
         return frameCollisionPosition;
     }
-    
+
     public Vec2 getCollisionPosition() {
         return collisionPosition;
     }
@@ -211,7 +251,6 @@ public class Ball {
         return height;
     }
 
-    
     public void dispose() {
 
         glDeleteVertexArrays(vao);
@@ -219,7 +258,11 @@ public class Ball {
         vao = 0;
         vbo = 0;
 
+        vaoBackground = 0;
+        vboBackground = 0;
+
         program.cleanUp();
+        programBackground.cleanUp();
 
         init = false;
     }
