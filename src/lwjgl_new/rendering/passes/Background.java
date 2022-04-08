@@ -1,23 +1,31 @@
 package lwjgl_new.rendering.passes;
 
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
+import static org.lwjgl.opengl.GL11C.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11C.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11C.glDrawArrays;
+import static org.lwjgl.opengl.GL13C.glActiveTexture;
 import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.GL_DYNAMIC_READ;
 import static org.lwjgl.opengl.GL15C.glBindBuffer;
 import static org.lwjgl.opengl.GL15C.glBufferData;
 import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15C.glGenBuffers;
-import static org.lwjgl.opengl.GL20.glUniform1i;
-import static org.lwjgl.opengl.GL20.glUniform2fv;
 import static org.lwjgl.opengl.GL20C.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20C.glUniform1i;
 import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
-import static org.lwjgl.opengl.GL40.glUniform1d;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import lwjgl_new.gui.Window;
+import lwjgl_new.rendering.Texture;
 import lwjgl_new.rendering.shaders.ShaderProgram;
 
 /**
@@ -30,26 +38,39 @@ public class Background {
 
     private int vao = 0, vbo = 0;
     private ShaderProgram program;
-
-    private Ball ball;
-    private int collidedPlayer = -1;
-    private boolean frameCollision = false;
+    private Texture texture;
     
-    private float timer;
+    private boolean showTimer = true;
+	float realWidth = 50f;
+	float realHeight = 100f;
+	private float width, height;
+	
+	public Background() {
+		width = realWidth / Window.width;
+		height = realHeight / Window.height;
+		
+		init();
+	}
 
-    public Background(Ball ball) {
-        this.ball = ball;
+
+    private void init() {
+        initVertices();
+        initTextures();
+        //  compile and upload shader
+        String path = System.getProperty("RESOURCE") + "background\\";
+        program = new ShaderProgram(path + "vertex.glsl", path + "fragment.glsl");
+        init = true;
     }
-
+    
     private void initVertices() {
-        float[] vertices = new float[]{
-            -1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        float[] counter = new float[]{
+            -width, height, 0.0f, 1.0f,		0.0f, 0.0f, 0.0f, 1.0f,
+            -width, -height, 0.0f, 1.0f, 	0.0f, 1.0f, 0.0f, 1.0f,
+            width, -height, 0.0f, 1.0f, 	1.0f, 1.0f, 0.0f, 1.0f,
             //
-            -1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,};
+            -width, height, 0.0f, 1.0f, 	0.0f, 0.0f, 0.0f, 1.0f,
+            width, -height, 0.0f, 1.0f, 	1.0f, 1.0f, 0.0f, 1.0f,
+            width, height, 0.0f, 1.0f, 		1.0f, 0.0f, 0.0f, 1.0f,};
 
         //  create VAO
         vao = glGenVertexArrays();
@@ -59,7 +80,7 @@ public class Background {
         {
             //  upload VBO
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, vertices, GL_DYNAMIC_READ);
+            glBufferData(GL_ARRAY_BUFFER, counter, GL_DYNAMIC_READ);
 
             //  define Vertex Attributes
             glEnableVertexAttribArray(0);
@@ -71,23 +92,28 @@ public class Background {
         glBindVertexArray(0);
 
     }
-
-    private void init() {
-        initVertices();
-
-        //  compile and upload shader
-        String path = System.getProperty("RESOURCE") + "background\\";
-        program = new ShaderProgram(path + "vertex.glsl", path + "fragment.glsl");
-        timerReset();
-        init = true;
+    
+    private void initTextures() {
+    	texture = new Texture();
+    	reloadTimerTexture(0);
     }
+    
+    public void reloadTimerTexture(int time) {
+    	BufferedImage image = new BufferedImage((int) realWidth, (int) realHeight, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g2d = image.createGraphics();
+		g2d.setColor(Color.RED);
+		g2d.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) (image.getHeight())));
+		
+		FontMetrics fm = g2d.getFontMetrics();
+		
+		g2d.drawString("" + time, image.getWidth() / 2f - fm.stringWidth("" + time) / 2f, image.getHeight() - 10);
+
+		texture.readBufferedImage(image);
+    }
+
 
     public void render() {
 
-        //  check init -> init
-        if (!init) {
-            init();
-        }
 
         if (!init) {
             return;
@@ -97,51 +123,24 @@ public class Background {
         {
             program.start();
             {
+
+				glUniform1i(program.getUniformLocation("texSampler"), 0);
+				glActiveTexture(GL_TEXTURE_2D);
+            	texture.bind();
+            	
                 glBindVertexArray(vao);
                 {
-                    glUniform1i(program.getUniformLocation("wallCollision"), frameCollision ? 1 : 0);
-                    if (frameCollision) {
-                        glUniform2fv(program.getUniformLocation("collisionPosition"), ball.getFrameCollisionPosition().toFA_());
-                    } else if (collidedPlayer != -1) {
-                        glUniform2fv(program.getUniformLocation("collisionPosition"), ball.getCollisionPosition().toFA_());
-                    }
-                    glUniform1i(program.getUniformLocation("player"), collidedPlayer);
-                    
-                    if(timer < Math.pow(10, -5)){
-                        timerReset();
-                    }
-                    
-                    if(frameCollision || collidedPlayer != -1 || timer != Math.pow(10, -1)){
-                        timerCountdown();
-                    }
-                    
-                    glUniform1d(program.getUniformLocation("timer"), timer);
-                    System.out.println(timer);
-                    
+                	glUniform1i(program.getUniformLocation("showTimer"), showTimer ? 1 : 0);
                     glDrawArrays(GL_TRIANGLES, 0, 6);
                 }
                 glBindVertexArray(0);
+                
+                texture.unbind();
             }
             program.stop();
         }
     }
     
-    private void timerReset(){
-        timer = 1;
-    }
-    
-    private void timerCountdown(){
-        timer-= Math.pow(10, -3);
-    }
-
-    public void setCollidedPlayer(int collidedPlayer) {
-        this.collidedPlayer = collidedPlayer;
-    }
-
-    public void setFrameCollision(boolean frameCollision) {
-        this.frameCollision = frameCollision;
-    }
-
     public void dispose() {
 
         glDeleteVertexArrays(vao);

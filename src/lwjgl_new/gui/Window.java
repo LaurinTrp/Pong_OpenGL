@@ -21,7 +21,7 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public class Window {
 
-    private long window = 0;
+    public static long window = 0;
     public static final int width = 800, height = 600;
     private Renderer renderer;
     
