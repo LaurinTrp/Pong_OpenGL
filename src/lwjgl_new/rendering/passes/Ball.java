@@ -49,7 +49,7 @@ public class Ball {
 	private Vec2 collisionPosition = new Vec2();
 
 	private Vec4 color = new Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	private Vec2 score = new Vec2();
+	public static Vec2 score = new Vec2();
 
 	private int collidedPlayer = -1;
 
@@ -153,19 +153,16 @@ public class Ball {
 
 	public boolean checkForPoint() {
 		if (offset.x + width > 1 || offset.x - width < -1) {
-
 			if (offset.x < 0) {
-				score.set(score.x + 1, score.y);
-			} else {
 				score.set(score.x, score.y + 1);
+			} else {
+				score.set(score.x + 1, score.y);
 			}
 
 			frameCollision = true;
 			frameCollisionPosition = new Vec2(offset);
 			offset.set(0, 0);
 			calculateVelocity();
-
-			System.out.println(score);
 
 			return true;
 		}
@@ -177,13 +174,13 @@ public class Ball {
 				&& offset.y + height >= pong.getOffset().y - pong.getHeight()
 				&& offset.x - width <= pong.getOffset().x + pong.getWidth()
 				&& offset.x + width >= pong.getOffset().x - pong.getWidth()) {
+			
 			velX = -velX;
 			Vec2 tempOffset = new Vec2(offset);
 			Vec2 tempOffsetPong = new Vec2(pong.getOffset());
 			collisionPosition = new Vec2((tempOffset.x + tempOffsetPong.x) / 2f,
 					(tempOffset.y + tempOffsetPong.y) / 2f);
 			collidedPlayer = player;
-			System.out.println(player);
 			return true;
 		}
 		return false;
@@ -200,10 +197,7 @@ public class Ball {
 			return;
 		}
 
-		// render vertices (vbo) of VAO vao to framebuffer and use the shader
-		// "simple-triangle"
 		{
-//        	System.out.println(collidedPlayer);
 
 			programBackground.start();
 			{

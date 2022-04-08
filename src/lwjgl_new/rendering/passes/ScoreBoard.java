@@ -1,61 +1,41 @@
 package lwjgl_new.rendering.passes;
 
-
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
-import static org.lwjgl.opengl.GL11C.GL_NEAREST;
-import static org.lwjgl.opengl.GL11C.GL_RGBA;
 import static org.lwjgl.opengl.GL11C.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11C.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11C.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11C.glBindTexture;
 import static org.lwjgl.opengl.GL11C.glDeleteTextures;
-import static org.lwjgl.opengl.GL11C.glDrawElements;
-import static org.lwjgl.opengl.GL11C.glGenTextures;
-import static org.lwjgl.opengl.GL11C.glGetIntegerv;
-import static org.lwjgl.opengl.GL11C.glTexImage2D;
-import static org.lwjgl.opengl.GL11C.glTexParameteri;
-import static org.lwjgl.opengl.GL12C.GL_CLAMP_TO_EDGE;
-import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL11C.glDrawArrays;
 import static org.lwjgl.opengl.GL13C.glActiveTexture;
 import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.GL_DYNAMIC_READ;
-import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.glBindBuffer;
 import static org.lwjgl.opengl.GL15C.glBufferData;
 import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15C.glGenBuffers;
-import static org.lwjgl.opengl.GL20C.GL_MAX_VERTEX_ATTRIBS;
-import static org.lwjgl.opengl.GL20C.glDeleteProgram;
 import static org.lwjgl.opengl.GL20C.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20C.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20C.glUniform1i;
-import static org.lwjgl.opengl.GL20C.glUniform4fv;
-import static org.lwjgl.opengl.GL20C.glUseProgram;
 import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30C.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30C.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.File;
-import java.io.IOException;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
-import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.opengl.GL11C;
+import org.lwjgl.opengl.GL20;
 
-import glm.mat._4.Mat4;
-import glm.vec._4.Vec4;
-import lwjgl_new.main.ImageLoader;
+import glm.vec._2.Vec2;
+import lwjgl_new.gui.Window;
+import lwjgl_new.rendering.Texture;
 import lwjgl_new.rendering.shaders.ShaderProgram;
 
 /**
@@ -64,119 +44,150 @@ import lwjgl_new.rendering.shaders.ShaderProgram;
  */
 public class ScoreBoard {
 
-    private boolean init = false;
+	private boolean init = false;
 
-    private int vao = 0, vbo = 0, tex = 0;
+	private int vao = 0, vbo = 0, tex = 0;
 
-    private ShaderProgram program = null;
+	private ShaderProgram program = null;
 
+	private Texture texture;
 
-    private void init() {
+	private float width, height;
+	private Vec2 offset = new Vec2();
+	float realWidth = 400f;
+	float realHeight = 150f;
 
-       
-    	initVertices();
-    	initShader();
-    	loadTextures();
+	public ScoreBoard() {
 
-        
+		width = realWidth / Window.width;
+		height = realHeight / Window.height;
 
-        init = true;
-    }
-    
-    
-    
-    private void initVertices() {
+		offset.set(0, 250f / (Window.height / 2f));
 
-         //  create vertex array
-         float[] vertices = new float[]{
-             //  vertex 0 (TL)
-             -0.28f, 0.5f, 0.0f, 1.0f,   //  pos
-             0.0f, 1.0f, 0.0f, 0.0f,     //  uv-coords
-             //  vertex 1 (BL)
-             -0.28f, -0.5f, 0.0f, 1.0f,  //  pos
-             0.0f, 0.5f, 0.0f, 0.0f,     //  uv-coords
-             //  vertex 2 (BR)
-             0.28f, -0.5f, 0.0f, 1.0f,   //  pos
-             0.33333f, 0.5f, 0.0f, 0.0f, //  uv-coords
-             //  vertex 3 (TR)
-             0.28f, 0.5f, 0.0f, 1.0f,    //  pos
-             0.3333f, 1.0f, 0.0f, 0.0f   //  uv-coords
-         };
+	}
 
-         //  create VAO, VBO and EBO
-         vao = glGenVertexArrays();
-         vbo = glGenBuffers();
+	private void init() {
 
-         glBindVertexArray(vao);
-         {
-             //  upload VBO
-             glBindBuffer(GL_ARRAY_BUFFER, vbo);
-             glBufferData(GL_ARRAY_BUFFER, vertices, GL_DYNAMIC_READ);
+		initVertices();
+		initShader();
+		loadTextures();
 
-             //  define Vertex Attributes
-             //  position
-             glEnableVertexAttribArray(0);
-             glVertexAttribPointer(0, 4, GL_FLOAT, false, 8 * Float.BYTES, 0 * Float.BYTES);
-             //  texture coodinates (uv-coordinates)
-             glEnableVertexAttribArray(1);
-             glVertexAttribPointer(1, 4, GL_FLOAT, false, 8 * Float.BYTES, 4 * Float.BYTES);
-         }
-         glBindVertexArray(0);
-    }
-    
-    private void initShader() {
-        //  compile and upload shader
-        program = new ShaderProgram(System.getProperty("RESOURCE") + "scoreboard\\vertex.glsl", System.getProperty("RESOURCE") + "scoreboard\\fragment.glsl");
-    }
+		init = true;
+	}
 
-    private void loadTextures() {
-    	tex = ImageLoader.loadTextureFromResource(System.getProperty("RESOURCE") + "textures\\earth_image.png");
-    }
-    
-    public void render() {
-        
-        if (!init) {
-            init();
-        }
+	private void initVertices() {
 
-        if (!init) {
-            return;
-        }
+		// create vertex array
+		float[] vertices = new float[] {
+				// vertex 0 (TL)
+				-width / 2f, height / 2f, 0.0f, 1.0f,	0.0f, 0.0f, 0.0f, 0.0f, // uv-coords
+				// vertex 1 (BL)
+				-width / 2f, -height / 2f, 0.0f, 1.0f, 	0.0f, 1.0f, 0.0f, 0.0f, // uv-coords
+				// vertex 2 (BR)
+				width / 2f, -height / 2f, 0.0f, 1.0f, 	1.0f, 1.0f, 0.0f, 0.0f, // uv-coords
 
-        {
-            
-            program.start();
-            {
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, tex);
-//                glUniform1i(program.texId, 0);
+				// vertex 0 (TL)
+				-width / 2f, height / 2f, 0.0f, 1.0f,	0.0f, 0.0f, 0.0f, 0.0f, // uv-coords
+				// vertex 1 (BL)
+				width / 2f, -height / 2f, 0.0f, 1.0f,	1.0f, 1.0f, 0.0f, 0.0f, // uv-coords
+				// vertex 2 (BR)
+				width / 2f, height / 2f, 0.0f, 1.0f, 	1.0f, 0.0f, 0.0f, 0.0f, // uv-coords
+		};
 
-                glBindVertexArray(vao);
-                {
-//                    glUniform4fv(program.offset, (new Vec4(0, 0, 0, 0)).to(vec4_buffer));
-                    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-                }
-                glBindVertexArray(0);
-            }
-            program.stop();
-        }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
+		// create VAO, VBO and EBO
+		vao = glGenVertexArrays();
+		vbo = glGenBuffers();
 
-    public void dispose() {
+		glBindVertexArray(vao);
+		{
+			// upload VBO
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, vertices, GL_DYNAMIC_READ);
 
-        glDeleteVertexArrays(vao);
-        glDeleteBuffers(vbo);
-        glDeleteTextures(tex);
-        vao = 0;
-        vbo = 0;
-        tex = 0;
+			// define Vertex Attributes
+			// position
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, false, 8 * Float.BYTES, 0 * Float.BYTES);
 
-        if (program != null) {
-            program.cleanUp();
-        }
+			// texture
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, false, 8 * Float.BYTES, 4 * Float.BYTES);
+		}
+		glBindVertexArray(0);
+	}
 
-        init = false;
-    }
+	private void initShader() {
+		// compile and upload shader
+		program = new ShaderProgram(System.getProperty("RESOURCE") + "scoreboard\\vertex.glsl",
+				System.getProperty("RESOURCE") + "scoreboard\\fragment.glsl");
+	}
+
+	private void loadTextures() {
+		texture = new Texture();
+		reloadTexture();
+	}
+	
+	public void reloadTexture() {
+		String scoreString = (int) Ball.score.x + ":" + (int) Ball.score.y;
+		
+		BufferedImage image = new BufferedImage((int) realWidth, (int) realHeight, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g2d = image.createGraphics();
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) (image.getHeight())));
+		
+		FontMetrics fm = g2d.getFontMetrics();
+		
+		g2d.drawString(scoreString, image.getWidth() / 2f - fm.stringWidth(scoreString) / 2f, image.getHeight() - 10);
+
+		texture.readBufferedImage(image);
+	}
+
+	public void render() {
+
+		if (!init) {
+			init();
+		}
+
+		if (!init) {
+			return;
+		}
+
+		{
+			program.start();
+			{
+				glUniform1i(program.getUniformLocation("texSampler"), 0);
+				glActiveTexture(GL_TEXTURE_2D);
+				texture.bind();
+
+				glBindVertexArray(vao);
+				{
+					GL20.glUniform2fv(program.getUniformLocation("offset"), offset.toFA_());
+
+					glDrawArrays(GL_TRIANGLES, 0, 6);
+				}
+
+				glBindVertexArray(0);
+
+				texture.unbind();
+			}
+			program.stop();
+		}
+	}
+
+	public void dispose() {
+
+		glDeleteVertexArrays(vao);
+		glDeleteBuffers(vbo);
+		glDeleteTextures(tex);
+		vao = 0;
+		vbo = 0;
+		tex = 0;
+
+		if (program != null) {
+			program.cleanUp();
+		}
+
+		init = false;
+	}
 
 }

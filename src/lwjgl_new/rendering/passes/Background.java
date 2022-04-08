@@ -1,6 +1,5 @@
 package lwjgl_new.rendering.passes;
 
-import lwjgl_new.rendering.shaders.ShaderProgram;
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL11C.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11C.glDrawArrays;
@@ -18,6 +17,8 @@ import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
 import static org.lwjgl.opengl.GL40.glUniform1d;
+
+import lwjgl_new.rendering.shaders.ShaderProgram;
 
 /**
  *

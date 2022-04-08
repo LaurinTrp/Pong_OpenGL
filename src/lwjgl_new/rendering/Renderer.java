@@ -4,7 +4,7 @@ package lwjgl_new.rendering;
 import lwjgl_new.rendering.passes.Background;
 import lwjgl_new.rendering.passes.Ball;
 import lwjgl_new.rendering.passes.Pong;
-import lwjgl_new.rendering.passes.ScoreBoard;	
+import lwjgl_new.rendering.passes.*;
 
 /**
  *
@@ -27,8 +27,6 @@ public class Renderer {
     }
 
     public void render() {
-        player1.render();
-        player2.render();
 
         ball.setCollidedPlayer(-1);
 
@@ -38,10 +36,18 @@ public class Renderer {
         ball.checkCollision(player1, 0);
         ball.checkCollision(player2, 1);
         
-        if(ball.checkForPoint());
-        
-        scoreBoard.render();
+        if(ball.checkForPoint()) {
+        	scoreBoard.reloadTexture();
+        	player1.resetOffset();
+        	player2.resetOffset();
+        }
+
+        player1.render();
+        player2.render();
         ball.render();
+    	
+    	scoreBoard.render();
+    	
         try {
             Thread.sleep(10);
         } catch (InterruptedException ex) {

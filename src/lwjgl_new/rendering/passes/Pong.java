@@ -58,6 +58,10 @@ public class Pong {
 		}
 	}
 
+	public void resetOffset() {
+		offset.set(offset.x, 0);
+	}
+	
 	private void initVertices() {
 		float[] vertices = new float[] { -width, height, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -width, -height, 0.0f,
 				1.0f, 1.0f, 1.0f, 1.0f, 1.0f, width, -height, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
