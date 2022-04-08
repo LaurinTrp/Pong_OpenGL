@@ -120,7 +120,7 @@ public class Ball {
 		// compile and upload shader
 		String path = System.getProperty("RESOURCE");
 		program = new ShaderProgram(path + "ball\\vertex.glsl", path + "ball\\fragment.glsl");
-		programBackground = new ShaderProgram(path + "background\\vertex.glsl", path + "background\\fragment.glsl");
+		programBackground = new ShaderProgram(path + "collisioneffect\\vertex.glsl", path + "collisioneffect\\fragment.glsl");
 
 		calculateVelocity();
 
