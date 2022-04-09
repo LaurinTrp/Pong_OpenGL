@@ -1,4 +1,4 @@
-package lwjgl_new.rendering;
+package rendering;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;

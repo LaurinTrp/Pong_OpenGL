@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lwjgl_new.rendering.passes;
+package rendering.passes;
 
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL11C.GL_TRIANGLES;
@@ -27,8 +27,8 @@ import java.util.Random;
 
 import glm.vec._2.Vec2;
 import glm.vec._4.Vec4;
-import lwjgl_new.gui.Window;
-import lwjgl_new.rendering.shaders.ShaderProgram;
+import gui.Window;
+import rendering.shaders.ShaderProgram;
 
 /**
  *

@@ -1,6 +1,6 @@
-package lwjgl_new.main;
+package main;
 
-import lwjgl_new.gui.Window;
+import gui.Window;
 
 public class Main {
 
@@ -8,7 +8,7 @@ public class Main {
 
 		String projectPath = System.getProperty("user.dir");
 		
-		System.setProperty("RESOURCE", projectPath + "#src#resources#".replaceAll("#", OS_Specifics.getFilepathSeperator()));
+		System.setProperty("RESOURCE", projectPath + "#resources#".replaceAll("#", OS_Specifics.getFilepathSeperator()));
 		
 		System.out.println(OS_Specifics.getFilepathSeperator());
 

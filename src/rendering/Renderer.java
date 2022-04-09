@@ -1,16 +1,16 @@
 
-package lwjgl_new.rendering;
+package rendering;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
 import org.lwjgl.glfw.GLFW;
 
-import lwjgl_new.gui.Window;
-import lwjgl_new.rendering.passes.Background;
-import lwjgl_new.rendering.passes.Ball;
-import lwjgl_new.rendering.passes.Pong;
-import lwjgl_new.rendering.passes.ScoreBoard;
+import gui.Window;
+import rendering.passes.Background;
+import rendering.passes.Ball;
+import rendering.passes.Pong;
+import rendering.passes.ScoreBoard;
 
 /**
  *

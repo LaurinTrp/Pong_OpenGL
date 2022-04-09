@@ -1,4 +1,4 @@
-package lwjgl_new.main;
+package main;
 
 public class OS_Specifics {
 	

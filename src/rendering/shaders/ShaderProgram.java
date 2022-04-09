@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lwjgl_new.rendering.shaders;
+package rendering.shaders;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import lwjgl_new.main.OS_Specifics;
+import main.OS_Specifics;
 
 /**
  *

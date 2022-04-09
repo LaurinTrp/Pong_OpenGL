@@ -1,4 +1,4 @@
-package lwjgl_new.gui;
+package gui;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
@@ -28,7 +28,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.opengl.GL;
 
-import lwjgl_new.rendering.Renderer;
+import rendering.Renderer;
 
 /**
  *

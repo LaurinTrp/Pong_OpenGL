@@ -1,4 +1,4 @@
-package lwjgl_new.rendering.passes;
+package rendering.passes;
 
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL11C.GL_TEXTURE_2D;
@@ -28,9 +28,9 @@ import java.awt.image.BufferedImage;
 import org.lwjgl.opengl.GL20;
 
 import glm.vec._2.Vec2;
-import lwjgl_new.gui.Window;
-import lwjgl_new.rendering.Texture;
-import lwjgl_new.rendering.shaders.ShaderProgram;
+import gui.Window;
+import rendering.Texture;
+import rendering.shaders.ShaderProgram;
 
 /**
  *
