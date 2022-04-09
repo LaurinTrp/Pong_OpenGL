@@ -80,18 +80,18 @@ public class ScoreBoard {
 		// create vertex array
 		float[] vertices = new float[] {
 				// vertex 0 (TL)
-				-width / 2f, height / 2f, 0.0f, 1.0f,	0.0f, 0.0f, 0.0f, 0.0f, // uv-coords
+				-width / 2f, height / 2f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // uv-coords
 				// vertex 1 (BL)
-				-width / 2f, -height / 2f, 0.0f, 1.0f, 	0.0f, 1.0f, 0.0f, 0.0f, // uv-coords
+				-width / 2f, -height / 2f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // uv-coords
 				// vertex 2 (BR)
-				width / 2f, -height / 2f, 0.0f, 1.0f, 	1.0f, 1.0f, 0.0f, 0.0f, // uv-coords
+				width / 2f, -height / 2f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // uv-coords
 
 				// vertex 0 (TL)
-				-width / 2f, height / 2f, 0.0f, 1.0f,	0.0f, 0.0f, 0.0f, 0.0f, // uv-coords
+				-width / 2f, height / 2f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // uv-coords
 				// vertex 1 (BL)
-				width / 2f, -height / 2f, 0.0f, 1.0f,	1.0f, 1.0f, 0.0f, 0.0f, // uv-coords
+				width / 2f, -height / 2f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // uv-coords
 				// vertex 2 (BR)
-				width / 2f, height / 2f, 0.0f, 1.0f, 	1.0f, 0.0f, 0.0f, 0.0f, // uv-coords
+				width / 2f, height / 2f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, // uv-coords
 		};
 
 		// create VAO, VBO and EBO
@@ -118,25 +118,24 @@ public class ScoreBoard {
 
 	private void initShader() {
 		// compile and upload shader
-		program = new ShaderProgram(System.getProperty("RESOURCE") + "scoreboard\\vertex.glsl",
-				System.getProperty("RESOURCE") + "scoreboard\\fragment.glsl");
+		program = new ShaderProgram("scoreboard", "vertex.glsl", "fragment.glsl");
 	}
 
 	private void loadTextures() {
 		texture = new Texture();
 		reloadTexture();
 	}
-	
+
 	public void reloadTexture() {
 		String scoreString = (int) Ball.score.x + ":" + (int) Ball.score.y;
-		
+
 		BufferedImage image = new BufferedImage((int) realWidth, (int) realHeight, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g2d = image.createGraphics();
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) (image.getHeight())));
-		
+
 		FontMetrics fm = g2d.getFontMetrics();
-		
+
 		g2d.drawString(scoreString, image.getWidth() / 2f - fm.stringWidth(scoreString) / 2f, image.getHeight() - 10);
 
 		texture.readBufferedImage(image);

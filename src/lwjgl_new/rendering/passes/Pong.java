@@ -94,8 +94,7 @@ public class Pong {
 		initVertices();
 
 		// compile and upload shader
-		String path = System.getProperty("RESOURCE") + "triangle\\";
-		program = new ShaderProgram(path + "vertex.glsl", path + "fragment.glsl");
+		program = new ShaderProgram("triangle", "vertex.glsl", "fragment.glsl");
 
 		init = true;
 	}

@@ -11,6 +11,8 @@ import java.io.IOException;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+import lwjgl_new.main.OS_Specifics;
+
 /**
  *
  * @author ltrapp
@@ -21,9 +23,10 @@ public class ShaderProgram {
     private int vertexShaderID;
     private int fragmentShaderID;
 
-    public ShaderProgram(String vertexFile, String fragmentFile) {
-        vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
-        fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
+    public ShaderProgram(String folder, String vertexFile, String fragmentFile) {
+    	String resourceFolder = System.getProperty("RESOURCE");
+        vertexShaderID = loadShader(resourceFolder + folder + OS_Specifics.getFilepathSeperator() + vertexFile, GL20.GL_VERTEX_SHADER);
+        fragmentShaderID = loadShader(resourceFolder + folder + OS_Specifics.getFilepathSeperator() + fragmentFile, GL20.GL_FRAGMENT_SHADER);
         programID = GL20.glCreateProgram();
         GL20.glAttachShader(programID, vertexShaderID);
         GL20.glAttachShader(programID, fragmentShaderID);

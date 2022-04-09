@@ -81,6 +81,7 @@ public class Renderer {
 
 			while (end - start < 1000) {
 				end = System.currentTimeMillis();
+				GLFW.glfwPollEvents();
 			}
 		}
 
