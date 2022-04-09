@@ -1,8 +1,5 @@
 package lwjgl_new.main;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import lwjgl_new.gui.Window;
 
 public class Main {

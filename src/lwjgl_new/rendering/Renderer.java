@@ -1,15 +1,16 @@
 
 package lwjgl_new.rendering;
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+
+import org.lwjgl.glfw.GLFW;
+
+import lwjgl_new.gui.Window;
 import lwjgl_new.rendering.passes.Background;
 import lwjgl_new.rendering.passes.Ball;
 import lwjgl_new.rendering.passes.Pong;
-
-import org.lwjgl.glfw.GLFW;
-import static org.lwjgl.opengl.GL11.*;
-
-import lwjgl_new.gui.Window;
-import lwjgl_new.rendering.passes.*;
+import lwjgl_new.rendering.passes.ScoreBoard;
 
 /**
  *
@@ -81,7 +82,6 @@ public class Renderer {
 
 			while (end - start < 1000) {
 				end = System.currentTimeMillis();
-				GLFW.glfwPollEvents();
 			}
 		}
 

@@ -25,7 +25,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import lwjgl_new.gui.Window;
-import lwjgl_new.main.OS_Specifics;
 import lwjgl_new.rendering.Texture;
 import lwjgl_new.rendering.shaders.ShaderProgram;
 

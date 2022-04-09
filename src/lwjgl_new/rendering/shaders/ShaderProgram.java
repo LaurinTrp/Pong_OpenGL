@@ -8,6 +8,7 @@ package lwjgl_new.rendering.shaders;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 

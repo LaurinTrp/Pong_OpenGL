@@ -15,6 +15,8 @@ import static org.lwjgl.opengl.GL15C.glBufferData;
 import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15C.glGenBuffers;
 import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniform2fv;
+import static org.lwjgl.opengl.GL20.glUniform4fv;
 import static org.lwjgl.opengl.GL20C.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
@@ -22,8 +24,6 @@ import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
 
 import java.util.Random;
-
-import static org.lwjgl.opengl.GL20.*;
 
 import glm.vec._2.Vec2;
 import glm.vec._4.Vec4;

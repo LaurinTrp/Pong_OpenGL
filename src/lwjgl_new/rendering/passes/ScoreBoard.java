@@ -23,14 +23,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Arrays;
 
-import javax.imageio.ImageIO;
-
-import org.lwjgl.opengl.GL11C;
 import org.lwjgl.opengl.GL20;
 
 import glm.vec._2.Vec2;

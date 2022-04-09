@@ -5,11 +5,6 @@
  */
 package lwjgl_new.rendering.passes;
 
-import lwjgl_new.gui.Window;
-import lwjgl_new.rendering.shaders.ShaderProgram;
-import glm.mat._4.Mat4;
-import glm.vec._2.Vec2;
-import glm.vec._3.Vec3;
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL11C.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11C.glDrawArrays;
@@ -19,12 +14,18 @@ import static org.lwjgl.opengl.GL15C.glBindBuffer;
 import static org.lwjgl.opengl.GL15C.glBufferData;
 import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15C.glGenBuffers;
-import org.lwjgl.opengl.GL20;
 import static org.lwjgl.opengl.GL20C.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
+
+import org.lwjgl.opengl.GL20;
+
+import glm.mat._4.Mat4;
+import glm.vec._2.Vec2;
+import lwjgl_new.gui.Window;
+import lwjgl_new.rendering.shaders.ShaderProgram;
 
 /**
  *
