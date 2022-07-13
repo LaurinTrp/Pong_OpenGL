@@ -1,10 +1,11 @@
-package lwjgl_new.gui;
+package gui;
 
-import lwjgl_new.rendering.Renderer;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
+
+import rendering.Renderer;
 
 import java.nio.*;
 

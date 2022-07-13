@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lwjgl_new.rendering.passes;
+package rendering.passes;
 
-import lwjgl_new.gui.Window;
-import lwjgl_new.rendering.shaders.ShaderProgram;
 import glm.mat._4.Mat4;
 import glm.vec._2.Vec2;
 import glm.vec._3.Vec3;
+import gui.Window;
+import rendering.shaders.ShaderProgram;
+
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL11C.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11C.glDrawArrays;

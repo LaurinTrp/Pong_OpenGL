@@ -1,5 +1,5 @@
-package lwjgl_new.main;
-import lwjgl_new.gui.Window;
+package main;
+import gui.Window;
 
 
 /**

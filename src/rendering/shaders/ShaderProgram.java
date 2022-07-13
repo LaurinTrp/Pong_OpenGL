@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lwjgl_new.rendering.shaders;
+package rendering.shaders;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

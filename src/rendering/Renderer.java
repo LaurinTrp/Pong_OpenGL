@@ -1,15 +1,12 @@
 
-package lwjgl_new.rendering;
-
-import lwjgl_new.rendering.passes.Background;
-import lwjgl_new.rendering.passes.Ball;
-import lwjgl_new.rendering.passes.Pong;
+package rendering;
 
 import org.lwjgl.glfw.GLFW;
-import static org.lwjgl.opengl.GL11.*;
 
-import lwjgl_new.gui.Window;
-import lwjgl_new.rendering.passes.*;
+import gui.Window;
+import rendering.passes.*;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -29,7 +26,6 @@ public class Renderer {
 		ball = new Ball(20f, 20f, 0, 0);
 		background = new Background();
 		scoreBoard = new ScoreBoard();
-		
 	}
 
 	public void render() {
