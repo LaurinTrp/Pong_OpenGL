@@ -1,4 +1,8 @@
 package main;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import gui.Window;
 
 
@@ -8,8 +12,9 @@ import gui.Window;
  */
 public class Main {
     public static void main(String[] args) {
-    	
-    	System.setProperty("RESOURCE", "D:\\Pong_OpenGL\\src\\resources\\");
+    	String path = "resource";
+    	File f = new File(path);
+    	System.setProperty("RESOURCE", f.getAbsolutePath() + "\\");
     	
         Window window = new Window();
         window.createWindow();
