@@ -1,7 +1,7 @@
 #version 440 core
 
-in vec4 myPosition;
-out vec4 fragColor;
+in Vec4 myPosition;
+out Vec4 fragColor;
 
 vec2 resolution = vec2(1.0, 1.25);
 
@@ -10,10 +10,10 @@ uniform vec2 collisionPosition;
 uniform int player;
 uniform bool wallCollision;
 
-vec4 color;
+Vec4 color;
 
 void main(){
-//	fragColor = vec4(1.0);
+//	fragColor = Vec4(1.0);
     vec2 uv = myPosition.xy / resolution;
     if(player != -1){
         vec2 collisionPos = (collisionPosition/resolution);
@@ -26,12 +26,12 @@ void main(){
             || (player == 1 && uv.x > collisionPos.x))
             discard;
 
-        vec4 myColor = vec4(d);
+        Vec4 myColor = Vec4(d);
 
         if(wallCollision){
-            color = vec4(0.0f, 1.0f, 1.0f, 1.0f);
+            color = Vec4(0.0f, 1.0f, 1.0f, 1.0f);
         }else{
-            color = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+            color = Vec4(1.0f, 0.0f, 1.0f, 1.0f);
         }
 
         fragColor = myColor * color;

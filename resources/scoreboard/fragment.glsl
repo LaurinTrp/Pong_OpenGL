@@ -2,13 +2,13 @@
 
 uniform sampler2D texSampler;
 
-out vec4 fragColor;
+out Vec4 fragColor;
 
-in vec4 uv;
+in Vec4 uv;
 
 void main()
 {
-    vec4 color = texture(texSampler, uv.st);
+    Vec4 color = texture(texSampler, uv.st);
     if(color.x == 0.0 && color.y == 0.0, color.z == 0.0){
     	discard;
     }

@@ -27,6 +27,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 import rendering.Renderer;
 
@@ -55,6 +56,7 @@ public class Window {
         glfwSetKeyCallback(window, new KeyHandler());
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
+
         
         glfwShowWindow(window);
     }
@@ -62,6 +64,7 @@ public class Window {
 	public void loop() {
 		GL.createCapabilities();
 		glClearColor(0, 0, 0, 1);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 		renderer = new Renderer();
 
