@@ -32,7 +32,7 @@ import rendering.shaders.ShaderProgram;
 
 /**
  *
- * @author djanssen
+ * @author 
  */
 public class Ball {
 

@@ -1,15 +1,15 @@
 #version 430 core
 
-layout(location = 0) in Vec4 position;
-layout(location = 1) in Vec4 texCoords;
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec4 texCoords;
 
 uniform vec2 offset;
 
-out Vec4 uv;
+out vec4 uv;
 
 void main()
 {
     uv = texCoords;
 
-    gl_Position = Vec4(position.xy + offset.xy, position.zw);
+    gl_Position = vec4(position.xy + offset.xy, position.zw);
 }

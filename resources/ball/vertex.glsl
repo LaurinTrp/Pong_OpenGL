@@ -1,16 +1,16 @@
 #version 440 core
 
-layout(location = 0) in Vec4 position;
-layout(location = 1) in Vec4 inColor;
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec4 inColor;
 
 uniform vec2 offset;
-uniform Mat4 model;
-uniform Vec4 myColor;
+uniform mat4 model;
+uniform vec4 myColor;
 
-out Vec4 color;
+out vec4 color;
 
 void main(){
     
-    gl_Position = Vec4(position.xy + offset.xy, position.zw);
+    gl_Position = vec4(position.xy + offset.xy, position.zw);
     color = myColor;
 }

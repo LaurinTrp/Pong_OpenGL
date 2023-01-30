@@ -25,6 +25,7 @@ public class ShaderProgram {
     private int fragmentShaderID;
 
     public ShaderProgram(String folder, String vertexFile, String fragmentFile) {
+    	System.err.println("Folder: " + folder);
     	String resourceFolder = System.getProperty("RESOURCE");
         vertexShaderID = loadShader(resourceFolder + folder + OS_Specifics.getFilepathSeperator() + vertexFile, GL20.GL_VERTEX_SHADER);
         fragmentShaderID = loadShader(resourceFolder + folder + OS_Specifics.getFilepathSeperator() + fragmentFile, GL20.GL_FRAGMENT_SHADER);

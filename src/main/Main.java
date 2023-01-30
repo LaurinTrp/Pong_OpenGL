@@ -1,5 +1,7 @@
 package main;
 
+import java.io.File;
+
 import gui.Window;
 
 public class Main {
@@ -8,7 +10,7 @@ public class Main {
 
 		String projectPath = System.getProperty("user.dir");
 		
-		System.setProperty("RESOURCE", projectPath + "#resources#".replaceAll("#", OS_Specifics.getFilepathSeperator()));
+		System.setProperty("RESOURCE", projectPath + File.separator + "resources" + File.separator);
 		
 		Window window = new Window();
 		window.createWindow();
